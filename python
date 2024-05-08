@@ -1,0 +1,209 @@
+
+import requests
+from bs4 import BeautifulSoup
+import time
+
+# Print the paragraphs
+import spacy
+
+
+def decide(c):
+  pass
+
+
+
+# Load English language model
+nlp = spacy.load("en_core_web_sm")
+
+def contains_crime(text):
+    # Process the text using spaCy
+    doc = nlp(text)
+    
+    # Define a list of crime-related keywords
+    crime_keywords = ["crime", "criminal", "theft", "robbery", "assault", "murder", "fraud", "illegal", "violence"]
+  
+    # Check if any token in the document matches a crime keyword
+    for token in doc:
+        if token.text.lower() in crime_keywords:
+
+            return True
+    return False
+
+# Define your paragraphs
+
+key_paragraphs = []
+
+import requests
+
+
+
+
+
+
+
+
+
+def scrape_paragraphs_from_multiple_urls(urls):
+
+    
+
+    all_paragraphs = []
+    # List of User-Agent strings to rotate
+    user_agents = [
+        'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/102.0.0.0 Safari/537.36',
+        'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/103.0.0.0 Safari/537.36',
+        # Add more User-Agent strings as needed
+    ]
+    headers = {'User-Agent': ''}
+
+
+  
+    for url in urls:
+        try:
+            print(url)
+            # Rotate User-Agent
+            headers['User-Agent'] = user_agents[len(all_paragraphs) % len(user_agents)]
+            
+            # Fetch the HTML content of the web page
+            response = requests.get(url, headers=headers)
+            response.raise_for_status()  # Raise an exception for bad requests
+
+            # Decode the content with the specified encoding, ignoring errors
+            content = response.content.decode('utf-8', errors='ignore')
+
+            # Parse the HTML using BeautifulSoup
+            soup = BeautifulSoup(content, 'html.parser')
+
+            # Find all paragraph elements
+            paragraphs = soup.find_all('p')
+
+            # Extract text from paragraph elements and add them to the list
+            for paragraph in paragraphs:
+                paragraph_text = paragraph.get_text()
+                all_paragraphs.append(paragraph_text)
+
+            # Introduce a delay to avoid bombarding the server
+            time.sleep(1)  # Sleep for 1 second between requests
+        except Exception as e:
+            continue
+
+         #  scrape_paragraphs_from_multiple_urls(urls)
+          # print(f"An error occurred while processing {url}: {e}")
+
+    #return all_paragraphs
+    count_crime_paragraphs = 0
+    for i, paragraph in enumerate(all_paragraphs, start=1):
+        strings = str(paragraph)
+        key_paragraphs.append(strings)
+      #  if "khayelitsha" in strings:
+
+        if contains_crime(strings):
+           count_crime_paragraphs +=1
+        #  print(strings)
+           decide(count_crime_paragraphs)
+         # print(f"Paragraph {i} contains mentions of crime.")
+        else:
+          #print(strings)
+           pass
+         # decide(count_crime_paragraphs)
+        #  print(f"Paragraph {i} does not contain mentions of crime.")
+      
+# Example usage
+urls = []
+print('new',urls)
+
+print(key_paragraphs)
+
+
+
+from googlesearch import search
+
+def get_google_links(query, num_results=10,country="ZA"):
+    try:
+        # Perform the Google search
+        search_results = search(query)
+        
+        # Return the links
+        return search_results
+    except Exception as e:
+        print("An error occurred:", e)
+        return []
+
+
+
+import requests
+
+def count_words_in_link(sentence, url):
+    try:
+        # Fetch the content of the URL
+        response = requests.get(url)
+        # Convert response text to lowercase for case-insensitive comparison
+        url_text = response.text.lower()
+        
+        # Split the sentence into individual words
+        words = sentence.split()
+        
+        # Initialize a dictionary to store word counts
+        word_counts = {word.lower(): 0 for word in words}
+        
+        # Count how many times each word appears in the URL text
+        for word in words:
+            word_counts[word.lower()] += url_text.count(word.lower())
+        
+        return {
+            "url": url,
+            "word_counts": word_counts
+        }
+    except Exception as e:
+        print("Error:", e)
+        return {}
+
+
+
+
+
+
+# Example usage
+
+
+
+
+# Example usage
+place = "Khayelitsha"
+query =f"is {place} safe"
+num_results = 5  # Number of results you want to retrieve
+links = get_google_links(query, num_results)
+count = 0
+for i, link in enumerate(links, start=1):
+    count += 1
+    if count < 10:
+     
+     urls.append(link)
+     print(f"{i}. {link}")
+    else:
+        
+        break
+
+# Example usage
+
+sentence = query
+urls_ = urls
+
+for url in urls_:
+ try:   
+    details = count_words_in_link(sentence, url)
+    if details:
+        print(f"Details for URL: {details['url']}")
+        for word, count in details['word_counts'].items():
+            print(f"'{word}' appears {count} times in the URL text.")
+        print()
+    else:
+        print(f"No details available for URL: {url}")
+ except:
+    pass
+
+#print(urls)
+#scrape_paragraphs_from_multiple_urls(urls)
+
+scrape_paragraphs_from_multiple_urls(urls)
+
